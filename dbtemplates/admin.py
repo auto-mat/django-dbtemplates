@@ -1,6 +1,8 @@
 import posixpath
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import ngettext
@@ -112,7 +114,7 @@ class TemplateAdmin(TemplateModelAdmin):
         }),
     )
     filter_horizontal = ('sites',)
-    list_display = ('name', 'language', 'send', 'creation_date', 'last_changed', 'site_list')
+    list_display = ('name', 'language', 'send', 'creation_date', 'last_changed', 'last_changed_by', 'site_list')
     list_filter = ('sites',)
     save_as = True
     search_fields = ('name', 'content')
@@ -169,5 +171,19 @@ class TemplateAdmin(TemplateModelAdmin):
         return ", ".join([site.name for site in template.sites.all()])
     site_list.short_description = _('sites')
 
+    @admin.display(description=_("Last changed by"))
+    def last_changed_by(self, obj):
+        entry = (
+            LogEntry.objects
+            .filter(
+                content_type=ContentType.objects.get_for_model(obj),
+                object_id=obj.pk,
+                action_flag__in=(1, 2),  # object added and changed
+            )
+            .select_related("user")
+            .order_by("-action_time")
+            .first()
+        )
+        return entry.user if entry else "—"
 
 admin.site.register(Template, TemplateAdmin)
