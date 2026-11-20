@@ -30,6 +30,7 @@ class Template(models.Model):
     language = models.CharField(_('language'), max_length=10,
                                 choices=settings.LANGUAGES,
                                 default=settings.LANGUAGE_CODE)
+    send = models.BooleanField(_('send'), default=True)
 
     objects = models.Manager()
     on_site = CurrentSiteManager('sites')
