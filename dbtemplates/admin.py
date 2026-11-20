@@ -91,7 +91,7 @@ class TemplateAdminForm(forms.ModelForm):
 
     class Meta:
         model = Template
-        fields = ('name', 'content', 'sites', 'creation_date', 'last_changed')
+        fields = ('name', 'language', 'content', 'sites', 'creation_date', 'last_changed')
         fields = "__all__"
 
 
@@ -100,7 +100,7 @@ class TemplateAdmin(TemplateModelAdmin):
     readonly_fields = ['creation_date', 'last_changed']
     fieldsets = (
         (None, {
-            'fields': ('name', 'content'),
+            'fields': ('name', 'language', 'content'),
             'classes': ('monospace',),
         }),
         (_('Advanced'), {
@@ -112,7 +112,7 @@ class TemplateAdmin(TemplateModelAdmin):
         }),
     )
     filter_horizontal = ('sites',)
-    list_display = ('name', 'creation_date', 'last_changed', 'site_list')
+    list_display = ('name', 'language', 'creation_date', 'last_changed', 'site_list')
     list_filter = ('sites',)
     save_as = True
     search_fields = ('name', 'content')

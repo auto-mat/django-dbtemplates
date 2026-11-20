@@ -27,6 +27,9 @@ class Template(models.Model):
                                    blank=True)
     creation_date = models.DateTimeField(_('creation date'), auto_now_add=True)
     last_changed = models.DateTimeField(_('last changed'), auto_now=True)
+    language = models.CharField(_('language'), max_length=10,
+                                choices=settings.LANGUAGES,
+                                default=settings.LANGUAGE_CODE)
 
     objects = models.Manager()
     on_site = CurrentSiteManager('sites')
